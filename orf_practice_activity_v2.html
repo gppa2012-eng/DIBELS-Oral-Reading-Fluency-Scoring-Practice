@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Activity: Oral Reading Fluency (ORF)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa; color: #2c3e50; line-height: 1.6;
+  }
+  .container {
+    width: 100%; max-width: 900px; margin: 0 auto;
+    background: #fff; border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    padding: 28px; overflow-wrap: break-word;
+  }
+  .header { border-bottom: 4px solid #ffc629; padding-bottom: 14px; margin-bottom: 20px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #7f8c8d; }
+  h1 { margin: 4px 0 6px; font-size: 26px; font-weight: 600; color: #000; }
+  .subtitle { margin: 0; color: #7f8c8d; font-size: 15px; }
+
+  .script {
+    background: #fffbf0; border-left: 4px solid #ffc629; border-radius: 6px;
+    padding: 16px 18px; margin-bottom: 22px; font-size: 14px; line-height: 1.7;
+  }
+  .script strong.label { display: block; color: #000; margin-bottom: 2px; }
+  .script .block + .block { margin-top: 12px; }
+
+  .step-title {
+    font-size: 18px; font-weight: 600; color: #000; margin: 0 0 6px;
+    border-bottom: 2px solid #ffc629; display: inline-block; padding-bottom: 4px;
+  }
+  .hint { font-size: 14px; color: #5f6b76; margin: 6px 0 14px; }
+
+  .timer {
+    font-family: 'Courier New', monospace; font-size: 40px; font-weight: 700;
+    letter-spacing: 3px; text-align: center; color: #000;
+    background: linear-gradient(135deg, #ffc629, #ffdc8a);
+    border-radius: 8px; padding: 12px; margin-bottom: 14px;
+  }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .tool, .btn {
+    font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+    padding: 9px 14px; border-radius: 6px; border: 2px solid #000;
+    background: #fff; color: #000; transition: background .15s;
+  }
+  .tool:hover, .btn:hover { background: #fff3cf; }
+  .tool.active { background: #000; color: #ffc629; }
+  .btn.dark { background: #000; color: #fff; }
+  .btn.dark:hover { background: #333; }
+  .btn.gold { background: #ffc629; border-color: #ffc629; }
+  .btn.gold:hover { background: #ffb800; }
+  .btn.gray { border-color: #b0b3b2; color: #555; }
+  .spacer { flex: 1; }
+
+  .mode-note {
+    font-size: 13px; font-weight: 600; color: #000;
+    background: #fffbf0; border-left: 4px solid #ffc629;
+    padding: 8px 12px; border-radius: 4px; margin-bottom: 12px;
+  }
+
+  /* Passage */
+  .passage-card {
+    border: 1px solid #ffe8a3; background: #fffdf6; border-radius: 8px;
+    padding: 22px 26px; margin-bottom: 18px;
+  }
+  .passage-title { text-align: center; font-weight: 700; font-size: 20px; margin: 0 0 14px; color: #000; }
+  .passage p { margin: 0 0 14px; font-family: Georgia, 'Times New Roman', serif; font-size: 18px; line-height: 2.2; text-align: left; }
+  .passage p:last-child { margin-bottom: 0; }
+  .word {
+    display: inline-block; cursor: pointer; padding: 0 3px; margin: 0 1px;
+    border-radius: 3px; position: relative; white-space: nowrap;
+  }
+  .word:hover { background: #ffe9a8; }
+  /* Slash through the word */
+  .word.error {
+    background-image: linear-gradient(to top right,
+      transparent calc(50% - 1.5px), #c0392b calc(50% - 1.5px),
+      #c0392b calc(50% + 1.5px), transparent calc(50% + 1.5px));
+    color: #7b1e14;
+  }
+  .word.bracket { background-color: #ffc629; font-weight: 700; }
+  .word.bracket::after { content: ']'; font-weight: 700; margin-left: 1px; }
+  .word.after-bracket { color: #a0a6ab; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  .stat { background: #fffbf0; border-left: 4px solid #ffc629; border-radius: 6px; padding: 12px; text-align: center; }
+  .stat .lbl { font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: #7f8c8d; }
+  .stat .val { font-size: 28px; font-weight: 700; color: #000; }
+  .note { background: #f0f0f0; border-left: 4px solid #b0b3b2; border-radius: 4px; padding: 12px 14px; font-size: 14px; }
+
+  @media (max-width: 640px) {
+    .container { padding: 16px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .passage p { font-size: 16px; line-height: 2.1; }
+    .passage-card { padding: 16px; }
+    .timer { font-size: 32px; }
+    h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="capture">
+
+  <div class="header">
+    <div class="eyebrow">Practice Activity</div>
+    <h1>Scoring Oral Reading Fluency</h1>
+    <p class="subtitle">DIBELS 8th Edition ORF Benchmark 2.Middle &middot; "Pay Phones"</p>
+  </div>
+
+  <div class="script">
+    <div class="block">
+      <strong class="label">Examiner script</strong>
+      "Please read this (point to passage) out loud. If you get stuck, I will tell you the word, so you can keep reading. When I say 'Stop' I may ask you to tell me about what you read, so do your best reading. Start here (point to first word of first paragraph of passage). Ready? Begin."
+    </div>
+    <div class="block">
+      <strong class="label">Reminders</strong>
+      <strong>Start timer:</strong> when the student says the first word.<br>
+      <strong>Prompts:</strong> if the student hesitates, wait 3 seconds, give the correct word, and mark the missed word as incorrect.<br>
+      <strong>Discontinue:</strong> if the student does not get any words correct within the first line, discontinue ORF.
+    </div>
+  </div>
+
+  <h2 class="step-title">Score the passage</h2>
+  <p class="hint">As the student reads, click a word to slash it as an error. Use the bracket tool to mark the last word read when the timer ends. Self-corrections are not errors.</p>
+
+  <div class="timer" id="timer">0:00</div>
+
+  <div class="toolbar" data-html2canvas-ignore="true">
+    <button class="tool active" id="toolError" onclick="setMode('error')">/ Mark error</button>
+    <button class="tool" id="toolBracket" onclick="setMode('bracket')">] Last word read</button>
+    <span class="spacer"></span>
+    <button class="btn dark" id="timerBtn" onclick="toggleTimer()">Start timer</button>
+    <button class="btn gray" onclick="resetAll()">&#8634; Reset</button>
+    <button class="btn gold" onclick="savePDF()">Save to PDF</button>
+  </div>
+  <div class="mode-note" id="modeNote" data-html2canvas-ignore="true">Click any word to slash it as an error.</div>
+
+  <div class="passage-card">
+    <div class="passage-title">Pay Phones</div>
+    <div class="passage" id="passage"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="lbl">Total words read</div><div class="val" id="sRead">&mdash;</div></div>
+    <div class="stat"><div class="lbl">Total errors</div><div class="val" id="sErr">0</div></div>
+    <div class="stat"><div class="lbl">Words correct</div><div class="val" id="sCorrect">&mdash;</div></div>
+    <div class="stat"><div class="lbl">CWPM</div><div class="val" id="sCwpm">&mdash;</div></div>
+  </div>
+  <div class="note"><strong>CWPM</strong> = words read up to the bracket (]) &minus; errors. Errors after the bracket are not counted.</div>
+</div>
+
+<script>
+  // 203 words total; hyphenated "long-distance" counts as two words (matches DIBELS cumulative counts)
+  const paragraphs = [
+    "Do you know what a pay phone is? In the old days when people were not home and wanted to make a phone call, they had to use a pay phone. There were no cell phones back then.",
+    "A pay phone was long, black and silver. It was about the size of a large shoe box. Most pay phones were in front of stores or on busy streets.",
+    "Some pay phones were inside a tall glass box with a door. You had to step inside to use the phone. When you closed the door, you did not hear much noise. The person you called could hear you better because of the quiet.",
+    "To make a call, you put coins into a slot in the phone. You could talk for only a few minutes. If you wanted to talk longer you had to put in more change.",
+    "A phone call made to someone in another town was known as a long-distance call. To make a long-distance call, you dialed zero to speak to an operator. The operator would tell you how much change to put into the coin slot. Sometimes you had to put in a whole pocketful of dimes and quarters."
+  ];
+
+  const errors = new Set();
+  let bracket = null;
+  let mode = 'error';
+  let seconds = 0, tick = null;
+
+  const passageEl = document.getElementById('passage');
+
+  function build() {
+    passageEl.innerHTML = '';
+    let idx = 0;
+    paragraphs.forEach(text => {
+      const p = document.createElement('p');
+      const tokens = text.split(' ');
+      tokens.forEach((tok, ti) => {
+        // Hyphenated compounds count as two words in DIBELS (e.g., long-distance)
+        const parts = tok.includes('-') ? tok.split(/(?<=-)/) : [tok];
+        parts.forEach((w, pi) => {
+          const span = document.createElement('span');
+          span.className = 'word';
+          span.textContent = w;
+          span.dataset.i = idx;
+          const myIdx = idx;
+          span.addEventListener('click', () => onWord(myIdx));
+          if (pi > 0) span.style.marginLeft = '0';
+          p.appendChild(span);
+          idx++;
+        });
+        if (ti < tokens.length - 1) p.appendChild(document.createTextNode(' '));
+      });
+      passageEl.appendChild(p);
+    });
+    render();
+  }
+
+  function onWord(i) {
+    if (mode === 'bracket') {
+      bracket = (bracket === i) ? null : i;
+    } else {
+      errors.has(i) ? errors.delete(i) : errors.add(i);
+    }
+    render();
+  }
+
+  function render() {
+    document.querySelectorAll('.word').forEach(el => {
+      const i = +el.dataset.i;
+      el.classList.toggle('error', errors.has(i));
+      el.classList.toggle('bracket', bracket === i);
+      el.classList.toggle('after-bracket', bracket !== null && i > bracket);
+    });
+    let errCount = 0;
+    errors.forEach(i => { if (bracket === null || i <= bracket) errCount++; });
+    const read = bracket !== null ? bracket + 1 : null;
+    document.getElementById('sErr').textContent = errCount;
+    document.getElementById('sRead').textContent = read ?? '\u2014';
+    document.getElementById('sCorrect').textContent = read !== null ? read - errCount : '\u2014';
+    document.getElementById('sCwpm').textContent = read !== null ? read - errCount : '\u2014';
+  }
+
+  function setMode(m) {
+    mode = m;
+    document.getElementById('toolError').classList.toggle('active', m === 'error');
+    document.getElementById('toolBracket').classList.toggle('active', m === 'bracket');
+    document.getElementById('modeNote').textContent = m === 'error'
+      ? 'Click any word to slash it as an error.'
+      : 'Click the last word the student read when the timer ended.';
+  }
+
+  function showTime() {
+    document.getElementById('timer').textContent =
+      Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2, '0');
+  }
+
+  function toggleTimer() {
+    const btn = document.getElementById('timerBtn');
+    if (tick) {
+      clearInterval(tick); tick = null; btn.textContent = 'Start timer';
+      return;
+    }
+    if (seconds >= 60) seconds = 0;
+    showTime();
+    btn.textContent = 'Stop timer';
+    tick = setInterval(() => {
+      seconds++;
+      showTime();
+      if (seconds >= 60) {
+        clearInterval(tick); tick = null;
+        btn.textContent = 'Start timer';
+        setMode('bracket');
+        document.getElementById('modeNote').textContent =
+          "Time! Click the last word the student read to place the bracket.";
+      }
+    }, 1000);
+  }
+
+  function resetAll() {
+    errors.clear(); bracket = null;
+    if (tick) { clearInterval(tick); tick = null; }
+    seconds = 0; showTime();
+    document.getElementById('timerBtn').textContent = 'Start timer';
+    setMode('error');
+    render();
+  }
+
+  function savePDF() {
+    html2pdf().set({
+      margin: 8,
+      filename: 'ORF_Scoring_Practice.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' }
+    }).from(document.getElementById('capture')).save();
+  }
+
+  build();
+</script>
+</body>
+</html>
